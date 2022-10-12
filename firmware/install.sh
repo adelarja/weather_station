@@ -1,20 +1,25 @@
 #!/bin/bash
+tty_port=$1
+firmware_file=$2
+absolute_path_to_esptool_virtualenv=$3
 
-ttyPort=$1
-firmwareFile=$2
 
-[ -z "$ttyPort" ] && ttyPort=/dev/ttyACM0
+if [ -z "$tty_port" ]; then
+	tty_port=/dev/ttyACM0
+fi
 
-source ~/.virtualenvs/esptool/bin/activate
+if [ -z "$firmware_file" ]; then
+	echo "You must pass the firmware file path"
+	exit
 
-echo "Deleting flash..."
+fi
 
-esptool.py --chip esp32 --port $ttyPort erase_flash
+if [ -z "$absolute_path_to_esptool_virtualenv" ]; then
+	echo "You must pass the path to the virtualenv root: example /home/example_user/.virtualenvs/test_env"
 
-echo "Flash deleted..."
+else
+        source $absolute_path_to_esptool_virtualenv/bin/activate
+        esptool.py --chip esp32 --port $ttyPort erase_flash
+        esptool.py --chip esp32 --port $ttyPort --baud 460800 write_flash -z 0x1000 $firmwareFile
 
-echo "Programing the firmware..."
-
-esptool.py --chip esp32 --port $ttyPort --baud 460800 write_flash -z 0x1000 $firmwareFile
-
-echo "Firmware was succesfully programmed!..."
+fi
