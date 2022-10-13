@@ -19,7 +19,7 @@ if [ -z "$absolute_path_to_esptool_virtualenv" ]; then
 
 else
         source $absolute_path_to_esptool_virtualenv/bin/activate
-        esptool.py --chip esp32 --port $ttyPort erase_flash
-        esptool.py --chip esp32 --port $ttyPort --baud 460800 write_flash -z 0x1000 $firmwareFile
+        esptool.py --chip esp32 --port $tty_port erase_flash
+        esptool.py --chip esp32 --port $tty_port --baud 460800 write_flash -z 0x1000 $firmware_file
 
 fi
